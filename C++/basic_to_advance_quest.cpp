@@ -47,9 +47,15 @@ How to define a catch block to catch all exceptions.
 What happens when realloc fails. How to handle it gracefully 
 Can protected members in base class accessible from derived class
 class Relationship
-Inheritance vs composition
-Aggregation and composition
+	Has A relationship & IS A relationship
+	Inheritance vs composition
+	Aggregation and composition
 Casting in C++
+	static_cast
+	dynamic_cast
+	const_cast
+	reinterprete_cast
+SOLID principles
 
 
 
