@@ -1,0 +1,470 @@
+
+1. in c++ how the memory is allocated
+2. Predict output of different printf() variations, like char* str = "12345" printf("%d", str); printf("%d", *str); printf("%c", str); printf("%c", *str); printf("%s", str); printf("%s", *str);
+3. Leetcode 203. Remove Linked List Elements
+4. Find the only missing number in a continuous sequence of integers.
+5. Locate a off-by-1 error in a C++ ctor, explain its consequence.
+6. Given a bunch of risky printf("%s", xxxxx); predict the output and explain.
+7. Design and code up a generic stack library.
+8. Design an elevator controller. (If you confront this one, you'll be rejected with high probability).
+9. C++ memory mapping related questions.
+	- design your own new and malloc
+10.DSA round: Find the missing number (Binary Search). Height of a tree
+11. Coding questions. Binary Search in a rotated array. Binary Tree insert and delete.
+12. Simplify the directory path 2. Multiplication of 2 very large numbers
+13. questions on lined list and hashing
+14. pointers 
+15. Find first missing number in sorted array Compare 2 specific strings
+16. C++ questions, trees traverse and flatten questions
+17.Implement stack class without STL
+18. C++: implement a generic stack without using any STL library. Very strict on performance and exceptions, almost like to reproduce std::stack
+19. Design a trie based solution
+20. IP address in routers stored in which DS
+21. sliding window question & tree traversal
+22. Tiling problem Diameter of a binary tree
+
+#OS
+1. spinlocks memcpy signals
+2. multithreading and multiprocessing
+
+
+##Networking 
+1. Switching basic question, how frame travel from one host to other host which is connected with switch
+2. IP address in routers stored in which DS
+
+
+
+#implement own atoi()
+#implement own unique_ptr()
+#implement own shared_ptr()
+#implement own own vector class
+#implement sizeof() operator
+#implement unordered_map()
+
+
+#implement own atoi()
+
+int my_atoi(string str)
+{
+	
+
+}
+
+
+####HOW DNS resolution happens###########
+
+Sure! DNS (Domain Name System) resolution is the process by which a human-readable domain name (like google.com) 
+is translated into an IP address (like 142.250.182.46) that computers can use to identify each other on the network.
+Here's a detailed breakdown of how DNS resolution works:
+
+Step-by-Step DNS Resolution Process
+1. Local Cache Check:
+	- The operating system or browser first checks the local DNS cache to see if the 
+	  IP address for the requested domain name is already stored. If it is, the cached IP address is used, and the process ends here.
+
+2. Hosts File Check:
+    - If the IP address is not in the local cache, the system checks the hosts file 
+	 (located at /etc/hosts on Unix-like systems and C:\Windows\System32\drivers\etc\hosts on Windows). 
+	 If the domain name is found here, the corresponding IP address is used.
+	 
+3. Query to Local DNS Resolver (ISP DNS):
+	- If the IP address is not found in the local cache or hosts file, the request is sent to the local DNS resolver,
+	  usually provided by the Internet Service Provider (ISP).
+	  
+4. Recursive Resolution by the Local DNS Resolver:
+	- The local DNS resolver begins the recursive resolution process, starting with the DNS root servers.
+	
+	- Recursive Resolution Steps:
+		a. Root Server Query
+		   Request: The resolver sends a query to one of the DNS root servers (13 logical servers worldwide).
+		   Response: The root server responds with a referral to the appropriate 
+		   Top-Level Domain (TLD) server (e.g., .com TLD server for google.com).
+		
+		b. TLD Server Query
+		   Request: The resolver sends a query to the TLD server provided by the root server.
+		   Response: The TLD server responds with a referral to the authoritative name server for the specific domain (e.g., the authoritative server for google.com).
+		
+		c. Authoritative Name Server Query
+		   Request: The resolver sends a query to the authoritative name server.
+		   Response: The authoritative name server responds with the IP address of the requested domain.
+
+5. Detailed Example of DNS Resolution for google.com
+	User Request: The user types ping google.com in the terminal.
+	Local Cache Check: The operating system checks the local DNS cache and hosts file but does not find the IP address.
+	Query to Local DNS Resolver: The request is sent to the local DNS resolver provided by the ISP.
+	Root Server Query:
+		Request: The resolver queries a root server for google.com.
+		Response: The root server replies with a referral to the .com TLD server.
+	TLD Server Query:
+		Request: The resolver queries the .com TLD server.
+		Response: The TLD server replies with a referral to the authoritative name server for google.com.
+	Authoritative Name Server Query:
+		Request: The resolver queries the authoritative name server for google.com.
+		Response: The authoritative name server responds with the IP address of google.com, say 142.250.182.46.
+	Types of DNS Records
+		A Record: Maps a domain name to an IPv4 address.
+		AAAA Record: Maps a domain name to an IPv6 address.
+		CNAME Record: Maps a domain name to another domain name (alias).
+		MX Record: Maps a domain name to a mail server for handling email.
+		NS Record: Specifies the authoritative name servers for a domain.
+		PTR Record: Maps an IP address to a domain name (reverse DNS lookup).
+		TXT Record: Holds arbitrary text data (often used for verification and security purposes).
+
+6. DNS Resolution Packet Details
+	DNS Query Packet Structure
+		Header:
+		
+		Identification: A unique ID to match responses to requests.
+		Flags: Indicate query/response type, recursion desired, etc.
+		Questions: Number of queries in the request.
+		Answer RRs: Number of resource records in the response (0 in queries).
+		Authority RRs: Number of authoritative records in the response (0 in queries).
+		Additional RRs: Number of additional records in the response (0 in queries).
+		
+		Question Section:
+	
+		Name: The domain name being queried.
+		Type: The type of query (A, AAAA, CNAME, etc.).
+		Class: Typically IN (Internet).
+	
+	DNS Response Packet Structure
+		Header:
+		
+		Identification: Same ID as the query to match the response.
+		Flags: Indicate query/response type, recursion desired, recursion available, etc.
+		Questions: Number of queries in the request.
+		Answer RRs: Number of resource records in the answer section.
+		Authority RRs: Number of authoritative records in the response.
+		Additional RRs: Number of additional records in the response.
+		Answer Section:
+		
+		Name: The domain name being answered.
+		Type: The type of query (A, AAAA, CNAME, etc.).
+		Class: Typically IN (Internet).
+		TTL: Time to live, the duration the record can be cached.
+		Data Length: Length of the data field.
+		Address: The IP address corresponding to the domain name.
+	
+7. Summary
+	User Input: The user initiates a DNS resolution by typing a domain name.
+	Local Cache: The system checks the local cache and hosts file.
+	Local Resolver: If not found locally, the request is sent to the local DNS resolver.
+	Recursive Resolution: The resolver queries root servers, TLD servers, and authoritative servers.
+	Response: The authoritative server provides the IP address.
+	Types of Records: Different DNS records serve various purposes (A, AAAA, CNAME, MX, etc.).
+	Packet Details: DNS query and response packets have specific structures for identification and data transfer.
+	This detailed explanation covers the entire DNS resolution process, from the initial user request to the final IP address resolution, including the specifics of DNS packets.
+	
+	
+########ping google.com##########
+
+1. Application Layer (Layer 7)
+	User Input: You enter the command ping google.com in your terminal.
+	Ping Utility: Generates an ICMP Echo Request packet.
+2. DNS Resolution
+	DNS Query:
+		Source IP: Your machine's IP
+		Destination IP: DNS server's IP
+		Payload: DNS query for google.com
+	DNS Response:
+		Source IP: DNS server's IP
+		Destination IP: Your machine's IP
+		Payload: IP address of google.com (e.g., 142.250.182.46)
+3. Network Layer (Layer 3) - ICMP Echo Request Packet Creation
+	ICMP Echo Request Packet:
+	Type: 8 (Echo Request)
+	Code: 0
+	Checksum: Calculated over the ICMP header and data
+	Identifier: Unique ID for the ping process
+	Sequence Number: Sequence number for the request
+	Payload: Optional data
+4. Network Layer (Layer 3) - IP Packet Creation
+	IP Header:
+	Version: 4
+	Header Length: Typically 20 bytes
+	Type of Service: Various flags for quality of service
+	Total Length: Length of the IP packet (header + data)
+	Identification: Unique identifier for the packet
+	Flags: Control flags (e.g., don't fragment)
+	Fragment Offset: For packet fragmentation
+	TTL: Time to Live (e.g., 64)
+	Protocol: 1 (ICMP)
+	Header Checksum: Error-checking for the header
+	Source IP: Your machine's IP
+	Destination IP: 142.250.182.46 (Google's IP)
+	Data: Encapsulated ICMP Echo Request packet
+5. Data Link Layer (Layer 2) - Ethernet Frame Creation
+	Ethernet Frame:
+	Destination MAC: MAC address of the next hop (e.g., default gateway)
+	Source MAC: Your machine’s MAC address
+	EtherType: 0x0800 (IPv4)
+	Payload: IP packet (with encapsulated ICMP Echo Request)
+	
+	ARP Resolution (if necessary)
+	If your machine does not know the MAC address of the next hop (e.g., the default gateway), it will perform ARP resolution:
+	
+	ARP Request:
+	
+	Destination MAC: Broadcast (ff:ff:ff:ff:ff
+	)
+	Source MAC: Your machine’s MAC address
+	EtherType: 0x0806 (ARP)
+	Payload:
+		Opcode: 1 (request)
+		Sender MAC: Your machine’s MAC address
+		Sender IP: Your machine’s IP
+		Target MAC: (empty)
+		Target IP: Default gateway's IP
+	
+	ARP Reply (from the gateway):
+	
+	Destination MAC: Your machine’s MAC address
+	Source MAC: Gateway's MAC address
+	EtherType: 0x0806 (ARP)
+	Payload:
+		Opcode: 2 (reply)
+		Sender MAC: Gateway's MAC address
+		Sender IP: Default gateway's IP
+		Target MAC: Your machine’s MAC address
+		Target IP: Your machine’s IP
+	Your machine stores the gateway's MAC address in the ARP cache for future use.
+
+6. Physical Layer (Layer 1) - Transmission
+	The Ethernet frame is converted into electrical signals (or optical signals for fiber) and transmitted over the physical medium.
+
+	Intermediate Steps (Routers)
+	Layer 3 Processing: Each router examines the destination IP address, decrements the TTL, recalculates the IP checksum, and forwards the packet based on its routing table.
+	Layer 2 Processing: The Ethernet frame is stripped and recreated with the MAC addresses of the respective interfaces at each hop.
+
+7. Arrival at Google's Server
+	Physical Layer (Layer 1): The server's NIC receives the signals and converts them back to data.
+	Data Link Layer (Layer 2): The Ethernet frame is processed, and the IP packet is extracted.
+	Network Layer (Layer 3): The IP packet is processed, and the ICMP Echo Request is extracted.
+
+	ICMP Processing: Google’s server generates an ICMP Echo Reply packet.
+
+8. Google's Server Responds - ICMP Echo Reply Packet Creation
+	ICMP Echo Reply Packet:
+	Type: 0 (Echo Reply)
+	Code: 0
+	Checksum: Calculated over the ICMP header and data
+	Identifier: Same as the Echo Request
+	Sequence Number: Same as the Echo Request
+	Payload: Data (same as the request)
+
+9. Network Layer (Layer 3) - IP Packet Creation for Reply
+	IP Header:
+	Source IP: 142.250.182.46 (Google's IP)
+	Destination IP: Your machine's IP
+	Other fields: Similar to the request, adjusted for reply
+
+10. Data Link Layer (Layer 2) - Ethernet Frame Creation for Reply
+	Ethernet Frame:
+		Destination MAC: MAC address of the next hop towards your machine
+		Source MAC: Google’s server MAC address
+		EtherType: 0x0800 (IPv4)
+		Payload: IP packet (with encapsulated ICMP Echo Reply)
+
+11. Transmission Back to Your Machine
+	The Ethernet frame is transmitted back through the network, passing through intermediate routers.
+
+12. Arrival at Your Machine
+	Physical Layer (Layer 1): The NIC receives the signals and converts them back to data.
+	Data Link Layer (Layer 2): The Ethernet frame is processed, and the IP packet is extracted.
+	Network Layer (Layer 3): The IP packet is processed, and the ICMP Echo Reply is extracted.
+	ICMP Processing: The ping utility receives the ICMP Echo Reply.
+13. Application Layer (Layer 7) - Display Results
+		The ping utility calculates the round-trip time and displays the result to the user.
+
+Summary : 
+	Application Layer: ping command execution.
+	DNS Resolution: Resolving google.com to an IP address.
+	Network Layer: Creation of ICMP Echo Request, IP packet encapsulation.
+				 ICMP type 8 (Echo request)
+				 IP Packet Protocol :1 (ICMP)
+	Data Link Layer: Ethernet frame creation and ARP resolution.
+	Physical Layer: Signal transmission.
+	Intermediate Routers: Processing and forwarding.
+	Google’s Server: Reception, ICMP Echo Reply creation.
+				 ICMP type 0 (Echo reply)
+	Network and Data Link Layers: Encapsulation and transmission back.
+	Your Machine: Reception and processing of the reply, display of results.	
+
+
+ ==========================================================================================
+ google ping route flow
+ ==========================================================================================
+ ping 20.0.0.10 from 10.0.0.10
+
+PC1 - 10.0.0.10 <--> (10.0.0.1 nw)R1 (20.0.0.1 nw) <--> 20.0.0.10 PC2 
+AA                       BB              CC                        DD
+1. Check if dest IP is withing the nw or different nw
+   PC1 has to check if destination IP is withing same network or different nw
+   To check this PCA does AND operation with
+                    PC1         PC2
+   IP -          10.0.0.10   20.0.0.10
+   subnet mast - 255.0.0.0   255.0.0.0  -> subnet of PC1 as we don't know anythis about PC2
+   result        ======================
+				 10.0.0.0    20.0.0.0
+				 
+	Both results are different in that case PC1 understands the dest IP is on another network. 
+	
+   so PC1 knows whenever dest ip is not withing the same network it has to send packet to 
+   it's default gateway
+
+2. Get the MAC of def gateway (ARP resolution)
+	- Here our def gateway ip is 10.0.0.1 but we need it's MAC to send the packet 
+	  to R1.
+	  
+	- to get the MAC PC1 will generate the ARP request. in ARP request 
+	
+	ARP HEADER{
+		SRC_MAC - AA
+		DST_MAC - FF:FF:FF:FF:FF:FF broadcast address
+		{
+		SIP - 10.0.0.10
+		DIP - 10.0.0.1
+		SMAC - MAC of PC1
+		Target MAC - 00:00:00:00:00:00
+		}
+	  }
+	  
+	- As R1 has ip it will do ARP reply with it's MAC
+		ARP HEADER{
+		SRC_MAC - BB
+		DST_MAC - AA
+		{SIP - 10.0.0.1
+		DIP - 10.0.0.10
+		SMAC - BB
+		Target MAC - AA
+		}
+	  }
+ 
+	- now PC1 knows dest ip and dest mac as well so ARP request reply process is done. 
+	- here switch also learns the MAC addresses and also map it's MAC to the ports 
+	
+3. ICMP request 
+	{
+		SIP - 10.0.0.10
+		DIP - 20.0.0.10
+		SMAC - AA
+		Target MAC - BB
+	}
+	
+   - Packet will reach to R1 left interface, R1 will check if this packet meant for me or not 
+     so it will check the dst_mac, if it's own mac address R1 will check the L3 packet
+	 and extract the dest IP. 
+	 
+4. R1 will check the routing table 
+	NOTE : Router will never send packet directly to detination it will only forward the packet 
+	to destination network. 
+	
+	R1 there's two network directly connected 
+	C : 10.0.0.0 Fa0/0
+	C : 20.0.0.0 Fa0/1
+	
+	R1 will not directly forward the packet to Fa0/1 but it will check the ARP table. 
+
+	Currently ARP is not resolved.
+	
+5. R1 raised the ARP request 
+	ARP HEADER{
+		SRC_MAC - CC
+		DST_MAC - FF:FF:FF:FF:FF
+		{
+			SIP - 20.0.0.1
+			DIP - 20.0.0.10
+			SMAC - CC
+			Target MAC - 00:00:00:00:00:00
+		}
+	  }
+	  
+	PC2 will do ARP reply with it's MAC address. now ARP is resolved.
+	{
+		SIP - 10.0.0.10
+		DIP - 20.0.0.10
+		SMAC - CC
+		Target MAC - DD
+	}
+	
+	ICMP request got reached from PC1 to PC2.
+
+6. Ping will get reply from PC2 to PC1 
+
+   So eventually if we see the packet at every hop SRC_IP DST_IP remains the same but 
+   MAC addresses will get's changed
+   
+   
+==========PACKET FLOW==========================
+
+Case 1 :
+	
+	LAN technology Ethernet(most common and popular), token ring, bus ring 
+	          Ethernet cable
+	(AA)PC1 <----------------------> (BB)PC2
+		10.1.1.1                     10.1.1.2
+		Ping 10.1.1.2
+	
+	- ICMP(L3 protocol) generates the echo 8 request
+	- echo 8 payload given to IP layer
+	- IP protocol will add one header like
+		- p=1 protocol number 1 is for protocol 
+		
+		- Layer-3 : |echo|10.1.1.1|10.1.1.2|p=1|ttl value| <- ICMP packet 
+		- Layer-2 : ARPA protocol will receive packet, it will add ethernet header
+			- |packet(l3 packet)|AA|?(d_mac)|type=0x0800| -> as we don't have destination MAC this 
+			process will be on hold 
+			
+		- ARPA will call ARP which resolve the MAC address from IP address 
+		- ARP request 
+			- |ARP|op=1|10.1.1.1|AA|10.1.1.2|00| <- op=1 is ARP request
+		- ARP will handove to ARPA again 
+		- ARPA receives ARP request and it adds the ethernet address
+			- |ARP packet|AA|ffff|0x0800| -> broadcaset 
+			
+		- PC2 will receive ARP request at layer 1. 
+		- Layer 2 ARPA protocol checks the destination MAC address if this msg is for me or not. 
+		- by checking dest MAX ffff and 0x0800 it undestand this is ARP request 
+		- L2 will forward this frame to ARP protocol 
+			- ARP will check the destination IP and destination MAC and op=1, if op=1 means
+			  it's ARP request. 
+			- and it checks the desitnation IP if destination IP is belong to PC2 it will generate 
+			  ARP reply. 
+		- ARP reply |ARP|op=2|10.1.1.2|BB|10.1.1.1|AA|
+		
+	- PC1 get's the ARP reply and it will update it's ARP table 
+	- Now PC1 can communcate to PC2
+		- |packet(l3 packet)|AA|BB|type=0x0800|
+		- PC2 will checks the dest MAC, it is own mac, so it will give this frame to L3 
+		- IP receives the packet 
+		- IP header + echo request 
+		- IP protocole removes the header and based on echo8 it determines it is ICMP request 
+		- IP => ICMP
+		- ICMP will generate the reply |reply 0| 0 means reply 
+		- ICMP will forward this reply to IP layer 
+		- IP layer will move packet to L2 after adding IP addresses 
+		- L2 layer will add ethernet information. 
+	
+Case 2:
+	PC1 <--------> switch <------------> PC2
+	
+case 3:
+	
+	PC1 <--------> switch <--------> R1 <------------> switch <------------> PC2
+	
+ 192.168.10.10                                                          192.168.20.10
+ 
+ ping 192.18.20.10
+ 
+ 192.168.10.10  192.168.20.10 
+ 255.255.255.0  255.255.255.0
+ 
+ 192.168.10.0   192.168.20.10
+ 
+ 
+ 
+
+
+
+
+
