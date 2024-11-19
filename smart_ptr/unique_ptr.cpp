@@ -69,7 +69,10 @@ public:
         }
     }
 };
-
+void test_fun(test *ptr)
+{
+	// access ptr as test class pointer
+}
 int main()
 {
     
@@ -91,5 +94,8 @@ int main()
     uniqueptr<test> obj1(new test(15));
     obj1->print();
     //test *ptr = new test(10);
+
+    // passing unique_ptr to normal pointer
+    test_fun(obj1.get());
     return 0;
 }
