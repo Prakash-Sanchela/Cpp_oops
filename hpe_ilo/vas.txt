@@ -1,0 +1,10 @@
+VAS :
+In FreeRTOS, VAS typically refers to Virtual Address Space, which is a memory management concept used to refer to the range of memory addresses that an application 
+can use for its variables, buffers, and other data structures.
+However, if you're specifically referring to VAS in FreeRTOS, it might be context-specific and not a direct part of FreeRTOS terminology. 
+FreeRTOS itself is a real-time operating system, and while it primarily focuses on task management, scheduling, inter-task communication, and synchronization,
+it doesn't have a built-in memory management system for virtual addressing (like in a fully-fledged operating system with virtual memory). Virtual memory concepts such as VAS are typically found in more complex operating systems like Linux, where applications are given the illusion of having their own dedicated address space.
+
+In embedded systems where FreeRTOS is typically used, the term VAS may be referenced informally to describe memory mapping or 
+segmented memory in systems where virtual memory (or address translation) isn't directly supported by the hardware.
+If you're looking for a specific FreeRTOS feature or tool related to "VAS," please provide more context, as the abbreviation could vary depending on the situation.
