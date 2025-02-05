@@ -27,8 +27,8 @@ int main() {
     }
     for (int i = 0; i < row; i++)
     {
-        delete[]arr[i];  // Assigning values
+        delete[]ptr[i];  // Assigning values
     }
-    delete []arr;
+    delete []ptr;
     return 0;
 }
