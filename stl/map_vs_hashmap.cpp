@@ -2,6 +2,7 @@
 // How order is being maintained in map?
 // How data is being stored actually in both map and hash map?
 // How data conflicting handled in hash map?
+// various collision resolution techniques for maps. 
 
 1. Map -> red black tree
    hashmap -> hash tables
