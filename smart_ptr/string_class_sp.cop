@@ -1,0 +1,146 @@
+Great! Let’s enhance your custom MyString class with operator overloading and then explain noexcept in a simple and interview-friendly way.
+
+⸻
+
+✅ Enhancements to MyString
+
+We’ll add:
+	1.	operator+ → for string concatenation
+	2.	operator== → for string equality comparison
+	3.	operator<< → for easy printing using std::cout
+
+⸻
+
+✨ Updated MyString Class with Operator Overloads
+
+#include <iostream>
+#include <memory>
+#include <cstring>
+
+class MyString {
+private:
+    std::unique_ptr<char[]> data_;
+    size_t length_;
+
+public:
+    // Default constructor
+    MyString() : data_(nullptr), length_(0) {}
+
+    // Parameterized constructor
+    MyString(const char* str)
+        : length_(std::strlen(str)),
+          data_(std::make_unique<char[]>(length_ + 1)) {
+        std::strcpy(data_.get(), str);
+    }
+
+    // Copy constructor
+    MyString(const MyString& other)
+        : length_(other.length_),
+          data_(std::make_unique<char[]>(other.length_ + 1)) {
+        std::strcpy(data_.get(), other.data_.get());
+    }
+
+    // Move constructor
+    MyString(MyString&& other) noexcept
+        : data_(std::move(other.data_)), length_(other.length_) {
+        other.length_ = 0;
+    }
+
+    // Copy assignment
+    MyString& operator=(const MyString& other) {
+        if (this != &other) {
+            length_ = other.length_;
+            data_ = std::make_unique<char[]>(length_ + 1);
+            std::strcpy(data_.get(), other.data_.get());
+        }
+        return *this;
+    }
+
+    // Move assignment
+    MyString& operator=(MyString&& other) noexcept {
+        if (this != &other) {
+            data_ = std::move(other.data_);
+            length_ = other.length_;
+            other.length_ = 0;
+        }
+        return *this;
+    }
+
+    // Destructor
+    ~MyString() = default;
+
+    // Print function
+    void print() const {
+        std::cout << (data_ ? data_.get() : "null") << '\n';
+    }
+
+    // Length accessor
+    size_t length() const {
+        return length_;
+    }
+
+    // Concatenation operator +
+    MyString operator+(const MyString& other) const {
+        size_t newLen = length_ + other.length_;
+        auto newData = std::make_unique<char[]>(newLen + 1);
+        std::strcpy(newData.get(), data_.get());
+        std::strcat(newData.get(), other.data_.get());
+        return MyString(newData.get());
+    }
+
+    // Equality operator ==
+    bool operator==(const MyString& other) const {
+        if (length_ != other.length_) return false;
+        return std::strcmp(data_.get(), other.data_.get()) == 0;
+    }
+
+    // Friend operator << for cout
+    friend std::ostream& operator<<(std::ostream& os, const MyString& str) {
+        os << (str.data_ ? str.data_.get() : "null");
+        return os;
+    }
+};
+
+
+⸻
+
+✅ Example Usage
+
+int main() {
+    MyString a("Hello");
+    MyString b("World");
+    MyString c = a + b;
+
+    std::cout << "Concatenated: " << c << std::endl; // HelloWorld
+
+    if (a == MyString("Hello")) {
+        std::cout << "Equal strings!" << std::endl;
+    }
+}
+
+
+⸻
+
+🔍 What is noexcept and Why Is It Used?
+
+✅ Simple Explanation:
+	•	noexcept tells the compiler and runtime that a function does not throw exceptions.
+	•	You add it to move constructors and move assignments to enable better optimization (e.g., STL containers prefer noexcept move operations).
+
+🔹 Without noexcept
+
+MyString(MyString&& other); // Compiler assumes it might throw
+
+Containers like std::vector may fall back to copy instead of move during reallocation.
+
+🔹 With noexcept
+
+MyString(MyString&& other) noexcept; // Guaranteed not to throw
+
+Now the STL can safely use move during reallocation.
+
+⸻
+
+✅ Interview-Friendly Answer for noexcept:
+
+“noexcept tells the compiler that a function, like a move constructor or move assignment, won’t throw exceptions. This allows standard containers to safely use moves instead of falling back to copies — improving performance during operations like resizing. It also helps with exception safety.
