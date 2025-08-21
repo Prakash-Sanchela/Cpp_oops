@@ -1,0 +1,1593 @@
+	1. Auto
+	2. Range loops
+	
+	Vector<int> vec = {1,2,3,4,5};
+	
+	For(int i:vec)
+		Cout << I << endl;
+		
+	For(auto it : vec)
+		Cout << it<< endl;
+		
+Advance C++
+	1. When it is mandatory to use Initializer List (MIL) in C++?
+		a. To initialize the non static const data member. 
+		b. To initialize reference member variable.
+		c. To construct another class object in another class who doesn't has default constructor. 
+		d. Without initializer list, you can not initialize the base class data member into derived class. 
+		e. If both variable name is same. 
+		f. Initializer List is used in initializing the data members of a class. The list of members to be initialized is indicated with constructor as a comma-separated list followed by a colon.
+		
+		Point(int i = 0, int j = 0):x(i), y(j) {}
+		
+		g. What are advantages and disadvantages of constructor initialization list.
+		
+		h. Why in case of constant member variable we need use only initializer list?
+		If non-static const data members in your class have default constructors & you don't use constructor initializer list, you won't be able to initialize them to intended state as they will be initialized to their default state.
+		
+		i. Why in case of reference member variable we need use only initializer list?
+		Reference should be declared and initialized at the same time
+		Reference data members must be initialized when compiler enters constructor as references can't be just declared & initialized later. This is possible only with constructor initializer list.
+		
+		CPP nuts :
+		Used to initialize the data members of classes. Two ways
+			§ Using {} this is uniform initialization
+			§ Using ()
+		
+	2. What limitations of ‘auto_ptr’ were resolved by ‘unique_ptr’ in C++11?
+		a. It takes ownership of the pointer in a way that no two pointers should contain the same object. Assignment transfers ownership and resets the rvalue auto pointer to a null pointer. Thus, they can’t be used within STL containers due to the aforementioned inability to be copied.
+		b. The problem with a class like auto_ptr is that is impossible to manage deep-copy and it is impossible to use it in generic container whose implementation presume the capability to copy objects from one place to another or to duplicate objects
+		
+	3. How to pass unique pointer to function as an argument in C++11?
+	4. When you face error – “L-value required”?
+	5. What are ‘weak_ptr’ / weak pointer in C++?
+		a. When you do want to refer to your object from multiple places – for those references for which it’s ok to ignore and deallocate (so they’ll just note the object is gone when you try to dereference).
+		A weak_ptr is created as a copy of shared_ptr. It provides access to an object that is owned by one or more shared_ptr instances but does not participate in reference counting.
+		b.  It is required in some cases to break circular references between shared_ptr instances.
+		Cyclic Dependency (Problems with shared_ptr): Let’s consider a scenario where we have two classes A and B, both have pointers to other classes. So, it’s always like A is pointing to B and B is pointing to A. Hence, use_count will never reach zero and they never get deleted.
+		A. This is the reason we use weak pointers(weak_ptr) as they are not reference counted. So, the class in which weak_ptr is declared doesn’t have a stronghold of it i.e. the ownership isn’t shared, but they can have access to these objects.
+		
+	6. How to get memory pointer by the smart pointer
+	7. How to assign unique_pointer to normal pointer
+	8. How move constructor is used in vector API?
+	9. Implement the shared_ptr
+	10. How it is implemented internally
+	11. What are type traits in C++. Explain with practical examples
+	12. How is type traits achieved in C++
+		A. https://www.internalpointers.com/post/quick-primer-type-traits-modern-cpp
+	13. What are templates in C++.
+
+
+	3. Lambda expression
+
+	• A lambda expression allows us to write source code inside other code, without
+	Having to create a separate function definition.
+	• Lambda expressions are anonymous functions which are defined inline.
+	• Useful for passing as function call arguments and return values.
+	• Defining a lambda expression
+	• We put [] for the function name
+	• We write the fun arguments in the usual way
+	• We write fun body the same way as for an inline function
+
+	• If lambda expression needs to use a local variable, it must capture it
+	Int x{20};
+	
+	[x](){ cout <<x << endl;}
+	
+	• To modify the local variable it must "Capture by reference"
+	[&x](){ ++x; }
+	
+	• We can capture all local variables in the current scope
+	
+	Int x;
+	Int y;
+	
+	[=](){ cout << x << y << endl; }    // capture all local variable by value
+	[&]() { ++x; ++y; }                          // capture all local variable by reference 
+	
+	• Lambda expression can be used in member functions  
+	#include <iostream>
+#include <vector>
+#include <algorithm>
+	using namespace std;
+	int main()
+{
+    [](int x) {cout<<"inside lambda"<<endl;};
+    vector<int> v{2,3,7,14,23};
+    for_each(v.begin(), v.end(), [](int x){cout<<"value of x : "<<x<<endl;});
+    
+    // generic lambda function introduced from C++14 normal lambda introduced from C++11.
+    auto add = [](auto x, auto y){
+        return x + y;
+    };
+    int result = add(10,20);
+    cout << "Result = " << result <<endl;
+    
+		string str_1 = "hello from ";
+		string str_2 = "lambda";
+		string str = add(str_1, str_2);
+		cout << "str = " << str <<endl;
+		
+	    cout<<"Hello World";
+	return 0;
+}
+	• Generic Lambda functions are useful when we want to reuse a Lambda function at different places. 
+	• Sometimes it can be used with the integers or double or string or with any custom objects.
+	• Another advantage is many times in the big projects we use namespace. So sometimes parameter type becomes very large. So to solve these problems, we can use the auto. 
+	• So in C++14 generic Lambdas were introduced to enhance the functionality of a Lambda function.
+	
+
+	4. Move semantics 
+		a. C++11 optimization for copying objects
+		b. Moving data instead of copying
+		c. Important optimization as C++ makes heavy use of value semantics
+		d. Move semantics works on r value reference. 
+		e. let’s say we have a function that creates a my_string object with some big content in its character buffer and returns it. The collector my_string variable will need to copy it from the returned object and the returned object will die as the scope of the called function is over.
+		f. This is where we can leverage the move semantics that got introduced from C++11 onwards. Move semantics provide a way to move data between objects without copying.
+		g. Lvalue, rvalue and && for move semantics
+		h. Move constructor
+			MyClass(MyClass &&obj)
+			{
+				I = obj.i;
+				J = obj.j
+				Obj = NULL
+			}
+			
+		i. CPPNuts
+		j. Lvalue, we can take address of expression, and they last extended period of time. 
+		k. Rvalues are such expression which you can't take address and they are temporary. 
+		l. Rvalue can be moved
+		m. Allow us to avoid unnecessary copies when working with temp objects
+		
+	5. Implementation
+		a. Implement own smart pointer
+			// A generic smart pointer class
+			template <class T>
+			class SmartPtr {
+			    T* ptr; 
+			public:
+			    SmartPtr(T* p = NULL) { ptr = p; }
+			  
+			    ~SmartPtr() { delete (ptr); }
+			  
+			    // Overloading dereferncing operator
+			    T& operator*() { return *ptr; }
+			  
+			    T* operator->() { return ptr; }
+			};
+			  
+			int main()
+			{
+			    SmartPtr<int> ptr(new int());
+			    *ptr = 20;
+			    cout << *ptr;
+			    return 0;
+			}
+		b. Implementation of unique_ptr
+			a. // unique_ptr implementation
+template <typename T>
+class my_UP
+{
+private:
+    T* uPtr;
+public:
+    my_UP():uPtr(nullptr){}
+    
+    my_UP(T* ptr) : uPtr(ptr){}
+    
+    // delete copy constructor and assignment operator
+    my_UP(const my_UP& obj) = delete;
+    my_UP& operator=(const my_UP& obj) = delete;
+    
+    // implement move symentics 
+    // move constructor
+    my_UP(my_UP&& obj)
+    {
+        cout << "In move constructor" << endl;
+        uPtr = obj.uPtr;
+        obj.uPtr = nullptr;
+    }
+    // move assignment operator
+    void operator=(my_UP&& obj)
+    {
+        cout << "In move assignment operator" << endl;
+        uPtr = obj.uPtr;
+        obj.uPtr = nullptr;
+    }
+    
+    T& operator*()
+    {
+        return *uPtr;
+    }
+    
+    T* operator->()
+    {
+        return uPtr;
+    }
+    ~my_UP() 
+    {
+        cout << "In my_UP destructor" << endl;
+        if (uPtr!=nullptr)
+            delete uPtr;
+    }
+};
+		c. Placement New operator
+			a. Normal new allocates memory in heap and constructs objects there whereas using placement new, object construction can be done at known address.
+			b. With normal new, it is not known that, at what address or memory location it’s pointing to, whereas the address or memory location that it’s pointing is known while using placement new.
+			c. The deallocation is done using delete operation when allocation is done by new but there is no placement delete, but if it is needed one can write it with the help of destructor
+			// initial value of X
+			    int X = 10;
+			  
+			    cout << "Before placement new :" << endl;
+			    cout << "X : " << X << endl;
+			    cout << "&X : " << &X << endl;
+			  
+			    // Placement new changes the value of X to 100
+			    int *mem = new (&X) int(100);
+			  
+			    cout << "\nAfter placement new :" << endl;
+			    cout << "X : " << X << endl;
+			    cout << "mem : " << mem << endl;
+			    cout << "&X : " << &X << endl;
+			
+	
+Advantages of std::unique_ptr Over std::auto_ptr
+Feature	std::auto_ptr	std::unique_ptr
+Copy semantics	Transfers ownership	Disabled (move-only)
+Use in containers	Unsafe	Safe
+Custom deleters	Not supported	Supported
+Move semantics	Not supported	Fully supported
+
+==================================================================================================
+	
+	1. C vs C++
+	2. OOPS concept
+		a. Abstraction
+		b. Encapsulation
+		c. Inheritance
+			i. Types of inheritance
+			ii. Dimond problem
+		d. Polymorphism
+			i. Compile-time polymorphism 
+				1) Function overloading 
+				2) Operator overloading
+			ii. Run time polymorphism 
+				1) Virtual functions
+			iii. Name mangling techniques
+		
+	3. Class & object
+	4. Constructors 
+		a. Default constructor
+		b. Parameterized constructor
+		c. Copy constructor
+		d. Move constructor
+	5. Destructors
+	6. Data access when class derived as public, protected and private. 
+	7. Friend functions and friend class
+	8. Shallow copy & deep copy
+	9. Mutable 
+	10. Inline functions
+	11. Default arguments
+	12. Pointers vs reference
+	13. Call  by value & call by reference 
+	14. THIS pointer
+	15. Self referential pointer
+	16. Memory organization in C++
+	17. Dangling pointer
+	18. Memory leak
+	19. Static_cast
+	20. Dynamic_cast
+	
+		
+	21. Difference between C and C++
+	22. OOPS concepts
+	23. How data security is given by C++?
+	24. Types of polymorphism.
+	25. What is Late binding? Static binding and Dynamic binding
+	26. Name Mangling
+	27. What is cout and cin? 
+	28. Difference between Structure and Class
+	29. Difference between Reference in C++ and pointer in C
+	30. What is Mutable?
+	31. What is inline function?
+	32. Can I call a member function inside the class without using class object? Yes, Static function.
+	33. Can you explain some ambiguous conditions by writing some sample code?
+	34. What is THIS pointer? What it returns?
+	35. Shallow copy vs Deep copy.
+	36. What is the use of virtual base class? 
+		a. To avoid the copy of duplicate data member in derived class.
+	37. What does virtual table contains?
+	38. How constant can be initialize using the constructor
+		a. Class A
+		{
+			Private: const int x;
+			A():x(10)
+			{
+				Cout<<x<<endl;
+			}
+		}
+	39. Can constructor overloading is possible? Yes. Is destructor overloading is possible? No
+	40. How to define constructor in private area? 
+		a. Use static function in class and invoke it from the main by using the class name. Declare object of the class inside the static function. Static function should be private.
+	41. Dynamic constructor
+	42.  Virtual function concept example
+		a. Class Base
+		{
+			Private: int x;
+			Public : Void Setx()
+			               {
+					x = 10;
+				     }
+				     virtual Void display()
+				     {
+						Cout<<"Value of x = "<<x<<endl;
+			                }
+		}
+		Class Derived : Public Base
+		{
+			Private: int y;
+			Public : Void Sety()
+			               {
+					y = 10;
+				     }
+				     Void display()
+				     {
+						Cout<<"Value of y = "<<y<<endl;
+			                }
+		}
+		Main()
+		{
+			Base *p;
+			Derived Obj1;
+			Obj1.Setx();
+			Obj1.Sety();
+			
+			P = &Obj1;
+			p->display();
+		}
+		
+	Explain the behavior of above program. What I'll make Display function of Base class As virtual function.
+	43. Is virtual destructor possible? Why
+	44. Is virtual constructor possible? Why
+	45. Can I use the derived class pointer to access the object of base class?
+
+==================================================================================================
+• C question
+	1. Compilation steps
+		i. Pre-processor
+		ii. Translator 
+		iii. Assembler
+		iv. Linker
+	2. How char is stored in 1 byte of memory in below program
+		i. Char ch;
+		ii. Char ch = 'a';   ans : it's ASCII stored 
+	3. How 0 will be stores as char and as an integer
+		i. Char ch = 0 // as integer
+		ii. Char ch = '0' // as character
+	4. How -1 is getting stored as binary, ans : 2's complement of 1.
+	5. int main()
+	{
+	    int a = 10;
+	    void *ptr = &a;
+	    printf("a : %d, ptr : %d\n", a, *ptr);
+	    return 0;
+	}
+	
+	
+	6. WAP to print the binary format of given number.  // if num & (1<<position)
+	7. WAP to find the string length using recursion:
+		Int fun (int a, int b)
+	8. Memory organization is C
+		i. Stack
+		ii. Heap
+		iii. Data
+		iv. Code
+		v. Is head and stack upgrowing/downgrading. Is there any standard way to define. 
+			i. 
+	9. const int a;
+	int const a;
+	const int *a;
+	int * const a;
+	int const * a const;
+	
+	WOutput of above program 
+	
+	10. Tell me the difference between char array & char *ptr
+		i. Char arr[] = "abcdef" vs char *p = "ABCDEF" : const literals
+		ii. Can I do arr++?   // compile time error I can do ptr++
+		
+	11. What is the advantage of using macros over functions?
+	12. What is the difference between #define and const?
+	13. Is it possible to give arguments in the main() function?
+	#include<stdio.h>
+	int main()
+	{
+	int number = 100;
+	printf("%d\n%d\n%d\n",number++,number,++number);
+	}
+	14. 
+	#include <stdio.h>
+	int x = 10;
+	int main() {
+	    
+	    {
+	        int x = 20;
+	        printf("%d\n", x);
+	    }
+	    printf("%d\n", x);
+	    return 0;
+	}
+	
+	15. Declare an array of five integer pointers. // int  *arr[5]
+	// declaring multiple unions
+	union test1 {    int x;    int y;} Test1;union test2 {    int x;    char y;} Test2;union test3 {    int arr[10];    char y;} Test3;
+	
+	16. Printf vs sprintf vs fprintf
+	17. Macros vs functions
+	18. Header file with <> and ""
+	19. Calloc vs malloc
+	20. Dynamic memory allocation.
+	21. Dangling pointer & segmentation fault, how will you deal with it. 
+	22. Write a function pointer for the function int fun(int, char); // int (*funptr)(char, char);
+	23. Call by value & Call by reference. 
+	24. Storage class.
+		i. Auto
+		ii. Static 
+		iii. Extern 
+		iv. Register 
+	25. Tell me the string apis. And implement your own strcat()
+	26. Recursion with example
+		i. Wap to print string, using recursion. 
+	27. Crash dump analysis
+
+C++
+	1. Test t1("Hello");
+	Test t2(t1);
+	Test t3;
+	T3 = t1;
+	2. Memory layout of C++ code
+	3. Why we cannot use ‘this’ pointer in static member function?
+	4. Explain any use case or example when you will prefer to use static data members and static member functions.
+	5. For C++ dynamic binding, how ‘virtual pointer’ / ‘vptr’ gets initialized?
+	6. If memory allocation using new fails in C++, how to handle it gracefully?
+	7. What are issues if we mix new and free in C++?
+	8. What is the size of empty class in C++ & Empty structure in C?
+	9. Is it possible to defined nested classes in C++?
+	10. What is Friend Class in C++?
+	11. How ‘Protected’ access specifier/modifier is used in C++ class?
+	12. Which all different modes of inheritance C++ supports? Please elaborate details about those.
+	13. Can we define virtual constructor in C++?
+	14. Can we define a pure virtual destructor in C++?
+	15. How to define a catch block to catch all exceptions.
+	16. If following syntax correct –
+	int arrayNum[BUF_SIZE];
+	arrayNum++;
+		a. No.
+		b. ‘arrayNum++’ will give error - L-value required
+	17. What is a segmentation fault in C/C++?
+	18. Difference between malloc and realloc.
+	19. What happens when realloc fails. How to handle it gracefully 
+	20. What causes memory leak? Which tools and techniques, you will use to identify and fix memory leaks?
+	21. Memcpy vs memmove
+	22. Which if condition check you will recommend and why? if(variable==CONST) or if(CONST==variable) 
+	23. How to detect memory leak?
+	24. Can protected members in base class accessible from derived class
+	25. Design patterns question
+	26. Factory vs strategy
+		a. Implement abstract factory in C++
+	27. Relationship
+	28. Inheritance vs composition
+	29. Aggregation and composition
+	30. Casting in C++
+
+STL
+	1. Internal data structures used for STL container
+	2. Emplace_back() vs push_back() in vector
+	3. When to choose deque over vector?
+		a. One should choose deque over vector if he wants to either add or delete from both the ends like implementing a Queue.
+	4. When to choose vector over deque
+		a. One should choose vector if insertion or deletions are required mostly in end like implementing a Stack.
+	5. Implement vector
+	6. map & Unordered_map
+	7. Map with class object as key
+	8. Which type of iterator is supported by STL container ‘Stack’ / ‘Queue’?
+	9. Which all different ‘Iterators’ supported in C++?
+		a. Input iterator
+		b. Output iterator
+		c. Forward iterator
+		d. Bidirectional iterator
+		e. Random access iterator
+	10. Deque
+		a. Double ended queue
+		b. Vector provides insertion and deletion at middle and end only. Whereas, deque provides operations for insertion at front, middle and end. That is, apart from push_back() and pop_back() APIs jus like vector, deque also has push_front() and pop_front() API to add and delete elements from front.
+		c. Vector provides good performance while insertion and deletion at end only and bad performance for insertion and deletion at middle.
+		d. Deque provides same kind of performance as vector for insertion & deletion at end and middle. Apart from that deque provides good performance for insertion and deletion at front also.
+		e. As Vector stores elements contiguously, where as deque internally contains a list of memory chunks which store elements contiguously. Due this basic architectural difference between vector and deque following things happen,
+		f. Performance of addition and deletion at end for vector is better than deque.
+		g. No Iterator invalidation happens in deque for insertion and deletion at front and end because like vectors, deque doesn’t have to shift elements from one memory to another in case current allocated memory is not sufficient to store the newly added element.
+		
+
+Tricky Questions
+	1. How to return more than one value from function? 
+	2. How to sort the vector of structure of employee data in c++? - not able answer?
+	3. How to call the third party API which accepts normal pointer but in the source code same pointer is declared as constant pointer? (1)
+	4. Can we declare this pointer as const or volatile or const volatile? (1)
+	5. What is the use of declaring function as const?
+	6. if the destructor of any class is made private and class object is created using dynamic memory allocation how to ensure that memory leak will not happen in case exception is thrown during execution?
+	7. How to use of override keyword?
+	8. How to return more than 1 value from function?
+	9. Is template a compile time or runtime polymorphism?
+	10. In which case we can't use constructor and what alternate way C++ has provisioned?
+	11. Register & volatile 
+		a. Volatile : 
+			i. Ask compiler not to do optimization
+			ii. Scenario : so if you have global variable and use it repetitively, during the operation some other thread of operation can change the 
+			iii. Value of it, so we are explicitly saying to compiler please do not apply optimization, instead fetch the value every time from the actual variable
+			
+Implementation
+	1. Implement vector
+		a. template <typename T>
+class mVector
+{
+private:
+    int m_size;
+    int m_capacity;
+    T* pVec;
+    
+public :
+    mVector()
+    {
+        m_size = 0;
+        m_capacity = 1;
+        pVec = new T[1];
+    }
+    void pushBack(T data)
+    {
+        if (m_size == m_capacity)
+        {
+            T* temp = new T[m_capacity*2];
+            
+            // copy old to new
+            for(int index = 0; index < m_capacity; index++)
+            {
+                temp[index] = pVec[index];
+            }
+            delete[] pVec;
+            
+            m_capacity = m_capacity * 2;
+            pVec = temp;
+        }
+        pVec[m_size] = data;
+        m_size++;
+    }
+    void push(T data, int index)
+    {
+        if(index == m_size)
+            pushBack(data);
+        else
+            pVec[index] = data;
+    }
+    
+    int size()
+    {
+        return m_size;
+    }
+    int capacity()
+    {
+        return m_capacity;
+    }
+    void print()
+    {
+        for(int index = 0; index< m_size ; index++)
+        {
+            cout << pVec[index] << " ";
+        }
+        cout << endl;
+    }
+};
+	2. Implement vector using std::unique_ptr<>
+	3. C++ class demo
+		class MyClass
+{
+private:
+    int *p;
+		public:
+    // def constructor
+    MyClass()
+    {
+        cout << "In default constructor " <<endl;
+        p = new int(0);
+    }
+    
+    // parameterize constructor
+    MyClass(int i)
+    {
+        cout << "In parameterize constructor " <<endl;
+        p = new int(i);
+    }
+    
+    // copy constructor
+    MyClass(const MyClass& obj)
+    {
+        cout << "In Copy constructor " <<endl;
+        p = new int();
+        *p = *(obj.p);
+    }
+    
+    // assignment operator
+    
+    MyClass& operator=(const MyClass& obj)
+    {
+        cout << "In assignment operator " <<endl;
+       if (this != &obj)
+            *p = *(obj.p);
+       return *this;
+    }
+    
+    void change(int i)
+    {
+        *p = i;
+    }
+    void show()
+    {
+        cout << "value at p = " << *p << endl;
+        
+    }
+    
+    ~MyClass()
+    {
+        cout <<"In destructor " << endl;
+        if (p)
+        {
+            delete p;
+            p = NULL;
+        }
+    }
+};
+		int main()
+{
+    printf("Hello World");
+    MyClass obj1;
+    MyClass obj2(10);
+    
+    //obj2.show();
+    MyClass obj3(obj2);
+    obj2.change(20);
+    obj3.show();
+    
+    //obj2.show();
+    obj1 = obj3;
+    obj3.change(30);
+    obj1.show();
+    obj3.show();
+    //obj2 = obj3;  
+    //obj2.show();
+    
+    MyClass obj4 = obj3;
+    obj3.change(40);
+    obj4.show();
+    obj3.show();
+    return 0;
+}
+	4. Implement own string class
+		#include <iostream>
+#include <cstring>
+		using namespace std;
+		// implement string class
+class s_string
+{
+private:
+    char *ptr;
+    unsigned int len;
+public:
+    s_string()
+    {
+        ptr = nullptr;
+        len = 0;
+    }
+    /*s_string() : ptr(nullptr), len(0)
+    {
+    }*/
+    // parameterized constructor
+    s_string(const char* p)
+    {
+        len = strlen(p);
+        ptr = new char[len+1];
+        strcpy(ptr, p);
+    }
+    // copy constructor
+    s_string(const s_string& obj)
+    {
+        len = obj.len;
+        ptr = new char[len+1];
+        strcpy(ptr, obj.ptr);
+    }
+    // move constructor
+    s_string(const s_string&& obj)
+    {   
+        ptr = obj.ptr;
+        len = obj.len;
+        obj = nullptr;
+        obj.len = 0;
+    }
+    // copy assignment operator
+    /*s_string& operator=(const s_string& obj)
+    {
+        if (this != &obj)
+        {
+            // here we already have some resource allocated for this object
+            // so to avoid any confusion we delete the already allocated 
+            // memory first
+            delete []ptr;
+            len = obj.len;
+            ptr = new char[len+1];
+            strcpy(ptr, obj.ptr);
+        }
+        return *this;
+    }*/
+    // copy assignment operator with CAS : copy and swap
+    // signature argument we are taking obj as value, so it will call copy constructor
+    // as obj is local and once we do a swap obj will goes out of scope and
+    // data will get swaped. 
+    s_string& operator=(s_string obj)
+    {
+        std::swap(this->ptr, obj.ptr);
+        std::swap(this->len, obj.len);
+        return *this;
+    }
+    unsigned int length()
+    {
+        return len;
+    }
+    friend ostream& operator<<(ostream& out,const s_string& obj);
+    friend istream& operator>>(istream& in, s_string& obj);
+    ~s_string()
+    {
+        if (ptr)
+        {
+            delete []ptr;
+            ptr = nullptr;
+            len = 0;
+        }
+    }
+};
+ostream& operator<<(ostream& out,const s_string& obj)
+{
+    out<<obj.ptr;
+    return out;
+}
+istream& operator>>(istream& in, s_string& obj)
+{
+    in>>obj.ptr;
+    return in;
+}
+int main()
+{
+    cout<<"Hello World";
+		// string class functionality
+    s_string s1; // default constructor
+    s_string s2 = "prakash"; // parameterized constructor
+    s_string s3 = s1; // copy constructor
+    s3 = s2; // copy assignment operator
+        
+    int len = s3.length();
+    cout << s2; //overload <<
+    cin >> s1;  //overload >>
+    
+    return 0;
+}
+==================================================================================================
+==================================================================================================
+Casting
+==================================================================================================
+Dynamic_cast
+
+	0. SYNTAX : dynamic_cast< new_type > (expression)
+	1. Dynamic cast is used at run time to find out correct down-cast
+	2. Need at least one virtual function in base class
+	3. If the cast is successful, dynamic_cast returns a value of type new_type.
+	4. If the cast fails and new_type is a pointer type, it returns the null pointer of that type.
+	5. If the cast fails and new_type is reference type, it throws an exception that matches a handler of type std::bad_cast
+
+Bottom line :
+	0. Work only on polymorphic base class (at lease one virtual function in base class)
+	1. Because it uses this information to decide about wrong down-cast
+	2. It is used for up-cast(d->b) and down-cast(b->d). But it is mainly used for correct dow-ncast.
+	3. Using this cast has run time overhead, because it check object type at tun time using RTTI.
+	4. If we are sure that we will never cast to wrong object then we should always avoid this cast and use static_cast 
+
+Derived D1;
+
+Base *p = dynamic_cast<Base*>(&D1); // correct cast
+Derived2 *dp = dynamic_cast<Derived2*>(&D1); // returns NULL
+
+Try{
+	Derived2 &r1 = dynamic_cast<Derived2&>(D1); 
+}
+Catch(std::exception& e)
+{
+	Cout<< e.what() << endl;    // returns the bad_cast exception
+}
+
+
+Static Cast
+
+SYNTAX :
+	Q. Why to use static_cast when implicit conversion is involved?
+		a. Because C-style cast is hard to find in code, nut you can search static_Cast in keyword.
+		
+	0. It performs implicit conversions between types.
+	1.  use static_cast when conversion between types is provided through conversion operator or conversion constructor.
+		a. Class Int
+		{
+			Int x;
+		Public:
+			Int(int x = 0;):x{x}{}
+			
+			Operator string() // conversion operator 
+			{
+				Return to_string(x);
+			}
+		};
+		
+		Int main()
+		{
+			Int obj(3);
+			
+			String str1 = obj;
+			Obj = 20;  // conversion operator
+			
+			String str2  = static_cast<string>(obj);
+			Obj = static_cast<int>(30);
+			Return 0;
+		}
+
+	2. Use for all up-cast, but never used for confused down-cast
+	3. Static_cast should be prefered when converting to void* OR from void*.
+
+BOTTOM LINE :
+	0. For compatible type conversion, such as float to int. 
+	1. For conversion operator and conversion constructors.
+	2. To avoid unrelated pointer conversion
+	3. Avoids derived to private base pointer conversion
+	4. Use for all up-cast but never use for confused down-case because there are no runtime checks performed for static_cast conversions.
+	5. Intensions are more clear in C++ stype cast
+	6. Finding is easy.
+	7. Error found at compile time. 
+
+
+==================================================================================================
+==================================================================================================
+Coding interview qustion
+==================================================================================================
+1. Write 2 array of int type having 5 elements. Write an array of pointers of 5 element? Assign address of arrays of first 2 element of array of pointer.
+ write down a function which will receive this array of pointer and print array values. Call function using function pointer.
+	#include <iostream>
+	using namespace std;
+	void display(int *ptr[]) {
+	 for(int i=0;i<5;i++)
+	 {
+	 cout<<*(ptr[0]+i) << "And" << *(ptr[1]+i) << endl;
+	 }
+	 std::cout<<"I am void";
+	
+	}
+	
+	int main()
+	{
+	 int arr[5] = {1,2,3,4,5};
+	 int arr2[5] = {1,2,3,6,7};
+	 int *ptr[5];
+	
+	 ptr[0]=arr;
+	 ptr[1]=arr2;
+	
+	 void (*funptr)(int* []) = &display;
+	
+	 (*funptr)(ptr);
+	
+	
+	 return 0;
+	}
+	
+2. MyFree implementation to avoid dangling pointer issue
+	1. Void MyFree(void **p) {
+	free(*p);
+	*p = NULL;
+	}
+	
+3. Find second largest integer number from given input array
+Implement function ‘secondLargestNumber’ that accepts input as an array of integers and returns second largest integer number.
+Example input: [8, -10, 56, -34, 78], [-23,-56,0,23,-100]
+4. Find the most frequent element in an array. 
+	a. Implement function ‘mostFrequent’ that accepts input as an array of integers and characters and identifies which integer/character appears most frequently
+Example input: [2, 'b', 1, 'a', 2, 6, 'a', 3, 'b', 2, 9, 3,2]
+int mostFrequent(int arr[], int size){
+    int MaxCount = 0;
+    
+    for (int i = 0; i < size; i++){
+        int count = 1;
+        for (int j = i+1; j < size; j++){
+            if (arr[i] == arr[j])
+                count++;
+        }
+        if (MaxCount < count){
+            MaxCount = arr[i];
+        }
+    }
+    return MaxCount;
+}
+int main()
+{
+    int arr[10] = {10, 5, 10, 2, 10, 4, 6, 2, 5, 10};
+    int max = mostFrequent(arr, 10);
+    cout << "Max occure char is  : " << max << endl;
+    return 0;
+}
+
+5. Check if string is palindrome or not
+6. segregate even odd element from the linked list
+	a. Input : 7->3->8->5->10->9 
+	b. Output : 8->10->7->3->5->9
+	c. void segregateEvenOdd(struct ST **head_ref)
+{
+    // 1. loop till current->next != nullptr
+    // 2. segregate even element into even list and maintain the last node
+    // 3. segregate odd element into off list and maintain the last node 
+    
+    ST *even = NULL;
+    ST *evenEnd = NULL;
+    ST *odd = NULL;
+    ST *oddEnd = NULL;
+    
+    ST *current = *head_ref;
+    
+    while(current->next != NULL)
+    {
+        // even
+        if (current->data%2 == 0)
+        {
+            if (even == NULL)
+            {
+                even = current;
+                evenEnd = even;
+            }
+            else
+            {
+                evenEnd->next = current;
+                evenEnd = evenEnd->next;
+            }
+        }
+        else
+        {
+            // odd
+            if (odd == NULL)
+            {
+                odd = current;
+                oddEnd = odd;
+            }
+            else
+            {
+                oddEnd->next = current;
+                oddEnd = oddEnd->next;
+            }
+        }
+        current = current->next;
+    }
+    if (even == NULL || odd == NULL)
+        return;
+    
+    evenEnd->next = odd;
+    oddEnd->next = NULL;
+    
+    *head_ref = even;
+}
+	
+7. Implement queue & stack & 
+	a. Implement queue using SLL
+	
+	// implement std::queue<>
+	class queue
+{
+private:
+    struct ST* front, *rear;
+	public:
+	void enqueue(int data)
+    {
+        ST *temp = new ST(data);
+        
+        if (rear == NULL)
+        {
+            front = temp;
+            rear = front;
+        }
+        rear->next = temp;
+        rear = temp;
+    }
+    int dequeue()
+    {
+        if (front == NULL)
+            return;
+        else
+        {
+            ST *temp = front;
+            int ret = temp->data;
+            free(temp);
+            front = front->next;
+        }
+    }
+};
+	
+	b. Implement stack using sll
+	
+	class myStack
+{
+private:
+    ST *top;
+public:
+    void push(int data)
+    {
+        ST* temp = new ST(data);
+        
+        temp->next = top;
+        top = temp;
+    }
+    int pop()
+    {
+        if (top == NULL)
+        {
+            cout<< "Stack is empty" << endl;
+        }
+        ST *temp = top;
+        top = top->next;
+        
+        temp->next = NULL;
+        free(temp);
+    }
+};
+	1. 
+8. Find the element that appears once in an array where every other element appears twice
+
+int findSingle(int ar[], int ar_size)
+    {
+        // Do XOR of all elements and return
+        int res = ar[0];
+        for (int i = 1; i < ar_size; i++)
+            res = res ^ ar[i];
+ 
+        return res;
+    }
+9. count the frequency of words in string
+
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+void printfreq(const string &str)
+{
+    stringstream ss(str);
+    
+    unordered_map<string, int> word_count;
+    string word;
+while(ss>>word)
+        word_count[word]++;
+    for(auto x:word_count)
+        cout << x.first << " " << x.second <<endl;
+}
+int main()
+{
+    string str = "geeks for geeks geeks quiz practice qa for";
+    printfreq(str);
+    return 0;
+}
+
+10. Program to find higher and lower nibble of a byte without shift operator
+  int mask = 128;
+
+18 - 0001 0010
+// Higher nibble
+   int b = 18;
+   for(int i = 7; i >= 4; i--)
+   {
+	if(b & (mask))
+		printf("1");
+	else
+		printf("0");
+		
+	mask = mask / 2;   
+   }
+   // lower nibble
+   mask = 8;
+   for(int i = 3; i >= 0; i--)
+   {
+	if(b & (mask))
+		printf("1");
+	else
+		printf("0");
+		
+	mask = mask / 2;   
+   }
+
+11. Operator overloading (cout, cin, increament, decreament)
+class data
+{
+private:
+    int x;
+public:
+data(){}
+    data(int i):x(i)
+    {}
+    
+    //prefix increament
+    data& operator++()
+    {
+        ++x;
+        return *this;
+    }
+    // postfix increament
+    data& operator++(int)
+    {
+        x++;
+        return *this;
+    }
+    friend ostream& operator<<(ostream& os, data& obj);
+    friend istream& operator>>(istream& is, data& obj);
+    
+    
+};
+ostream& operator<<(ostream& os, data& obj)
+{
+    os<< obj.x<< endl;
+    return os;
+}
+istream& operator>>(istream& is, data& obj)
+{
+    is>>obj.x;
+    return is;
+}
+int main()
+{
+    data obj(10);
+    cout << obj << endl;
+    cin>>obj;
+    cout << obj << endl;
+    obj++;
+    cout << obj << endl;
+    ++obj;
+    cout << obj << endl;
+    printf("Hello World")
+    return 0;
+}
+
+==================================================================================================
+==================================================================================================
+Design pattern
+==================================================================================================
+Behavioural design pattern
+Observer design pattern:
+	- One to many dependency between objects so that when one objext changes state, all of its subscribers/dependents are notified and updated automatically. 
+	- When to use :
+		○ For example, let's say you have logged into gmail from your laptop, mobile and tablet. When new email comes, user should get notification in every device in which he/she logged in. 
+		So it's like new mail is an event and all the logged in device is subscribers to that change, once new event is done all the device automatically get's that update.
+		○ Second example could be live weather forecast. From sensor when there's change in weather station, observer pattern works as publisher and each client can work as subscribers and can receives the updates.
+		○ Best example is Youtube's bell icon. So whenever new video from perticular channel get's uploaded, subscribers will get notification.   
+		○ Change is made in subjects, here subject is gmail/weather forecast station. To that subjects multiple observers are there which observe the subject and when there's change, observers will get's the updates. 
+
+	
+
+		○ Subject : Youtube channel/gmail
+			§ observerCollection : maintaining list of observers (people who pressed the bell icon/different devices logged into gmail)
+			§ registerObserver()
+			§ unregisterObserver(observer)
+			§ NotifyObserver() -> notification to observer
+		○ Observer
+			§ Notify()/update() 
+		○ concreteObserverA
+			§ Notify()/update() -> observer will get updates by calling this methods. 
+
+Factory design pattern
+Abstract factory
+Singleton
+Observer
+Add 1 more here.
+SOLID
+S - Single Responsibility principle
+O - Open/closed Principle
+L - Liskov substitution principle
+I - Interface segment principle
+D - Dependency Inversion principle
+
+Advantages:
+	1. Help us to write simple code
+	2. Avoid duplicate code
+	3. Easy to maintain
+	4. Easy to understand
+	5. Flexible software
+	6. Reduce complexity
+
+	1. S - Single Responsibility principle
+		○ Definition: A class should have only one reason to change, meaning it should have only one job or responsibility.
+		○ Explanation: Each class or module should focus on a single task or function. This makes the system easier to understand and maintain. For example, a class that handles database operations should not also be responsible for user interface logic.
+	2. O- Open/Closed principle
+		• Class should be open for extension but closed for modification
+		• Definition: Software entities should be open for extension but closed for modification.
+		• Explanation: You should be able to add new functionality to a system without changing its existing code. This is achieved by writing code in such a way that new behavior can be added by creating new classes or methods, rather than altering the existing ones.
+	3. Liskov Substitution Principle (LSP):
+		• Definition: Subtypes must be substitutable for their base types without altering the correctness of the program.
+		• Explanation: Any subclass should be able to replace its parent class without affecting the functionality of the program. For example, if a function expects a Bird object, it should work correctly even if a Penguin (a subclass of Bird) is passed to it, assuming all behavior of Bird is correctly implemented by Penguin.
+	• Interface Segregation Principle (ISP):
+		• Definition: Clients should not be forced to depend on interfaces they do not use.
+		• Explanation: Rather than having one large, general-purpose interface, you should create smaller, more specific interfaces that clients will only depend on. This avoids situations where a class has to implement methods it does not need, making the system more flexible and easier to understand.
+	• Dependency Inversion Principle (DIP):
+		• Definition: High-level modules should not depend on low-level modules; both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.
+		• Explanation: Instead of high-level components directly depending on low-level components, both should depend on an abstraction (like an interface). This principle reduces the coupling between components, making the code more modular and easier to change.
+	
+		
+
+Class Relationship
+Association
+	Composition:
+		In composition, one class contains an object of another class as a member. The contained object's lifetime is tied to the containing object. For example, a Car class may contain an Engine object.
+		
+	Aggregation : Has A
+		
+Inheritance : Is-A
+Dependency
+Association
+Realization
+Friendship
+
+==================================================================================================
+==================================================================================================
+Multithreading | IPC
+==================================================================================================
+Multi threading & IPC
+	1. Process vs thread
+	2. How to decide how many threads i should create?
+	3. When  multiple processes can be betters than multiple threads?
+	4. Have you used std::threads or pthread library for multithreading 
+	5. What’s the difference between semaphore & mutex?
+	6. Difference between shared memory and message queues 
+	7. Thread safe singleton
+	8. When deadlock occurs?
+	9. What are condition variables
+	10. How to pass multiple arguments to a thread function?
+	11. Copying 100 files to reduce copy time – Proposed to create 100 threads. When told that it might not improve the performance then reduced the number of threads. He didn’t know what should be the criteria to define no of threads.
+	12. Have you used multi threading in any of your project. 
+	13. Let's say I have 2 consumer & 2 producer, Write a multi threading program
+	14. How to send the argument/data to thread which is already executing.
+
+Inter Process Communication
+	
+	• When one process is dependent on the output of other process, then they have to communicate between each other, so they has to use IPC.
+	• When multiple process sharing the task to communicate between them, IPC is used.  
+	• IPC real time examples
+		○ Drag and dropped is achieved by IPC
+		○ Using | in shell command 
+		
+	1. Pipe
+		a. One of the IPC supported by kernel.
+		b. Unidirectional communication channel provided by pipe
+		c. Pipe has two end, read end and write end. 
+		d. Pipe is created using pipe(2) which creates a new pipe and returns two file descriptors one for read end, other is write end. 
+		e. Pipe can only be used to create a communication channel between related processes, like parent & child.
+		f. The data is processed in a first in, first out bacis, usually abbreviated to FIFO.
+		g. This means if you write the bytes 1, 2, 3,4 to file_descriptor[1], reading from file_descriptor[0] will produce 1,2,3,4. 
+		h. You should be aware that if you try to read from fd[1] and write from fd[0], will result into undefined behaviour and may return -1 with ERR number
+		i. If we close the read end of the pipe and try to write it from the write end, then SIGPIPE(13) single is generated.
+		j. E.g. Command on shell, ls | grep "filename.c"
+		k. Cat filaname.c | grep "printf"
+		l.  client is communicating with server using some protocols 
+
+	1. Named pipe (FIFO)
+		a. Client server program using FIFO
+		b. Works for unrelated process as well. 
+	2. Disadvantages of Pipe and Named pipe
+		a. Reading process should be alive while writing process writing the data into the pipe
+		b. There is no such mechanism in named pipe where write can put data into pipe & terminate and reading process reads it afterwards. 
+		c. Write process doesn't have the mechanism to send a data only to perticuler process.
+		d. To overcome this we need to use message queues
+	3. Message queue
+		a. Ipcs -q -> display the present msg queues in kernel
+		b. Ipcrm <msg id/key number> -> delete the msg queues.
+		c. Addressing mechanism is available
+		d. Sender can drop the data into queue and later receiver can read the data.  
+		e. Functions :
+		f. Disadvantage :
+			i. One of the slowest IPC, using queue we are burdening more to the kernel, because it has to maintain the structure, link list and searching. 
+			ii. To overcome this issue, we can use shared memory
+		
+	4. Shared memory
+		a. It allows two unrelated processes to access the same logical memory.
+		b. One of the fastest IPC
+		c. Shared memory provides an efficient way of sharing and passing the data between multiple processes. 
+		d. By itself shared memory doesn't provide any synchronization facilities.
+		e. So we need to depend upon other mechanism to synchronize access to the shared memory and pass small message to all the processes. 
+		f. There are no automatic facilities to prevent a second process from starting to read the shared memory before the first process has finished writing to it. 
+		g. It’s the responsibility of the programmer to synchronize access
+		h. The functions for shared memory resemble those for semaphores:
+			i. #include <sys/shm.h>
+			void *shmat(int shm_id, const void *shm_addr, int shmflg);
+			int shmctl(int shm_id, int cmd, struct shmid_ds *buf);
+			int shmdt(const void *shm_addr);
+			int shmget(key_t key, size_t size, int shmflg);
+		i. What is going on internally?
+			i. Whenever we use shmat() for sender process, there is separate memory is provided at user space, and when other process try to read it, kernel do some processes and exchanging the data.
+		j. Disadvantage:
+			1) In shared memory, if read process is read first then write into the same memory, there's chance to get the junk data while reading.
+			2) This is because of lake of synchronization.
+
+1. Producer consumer problem with 2 thread for producer 2 thread for consumer
+
+#include <stdio.h>
+#include <iostream>
+#include <vector>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include<memory>
+using namespace std;
+vector<int> iVec;
+const unsigned int MAX_BUFF_SIZE = 50;
+std::mutex mu;
+std::condition_variable cond;
+void producer(int data)
+{
+    while(data)
+    {
+        std::unique_lock<mutex> locker(mu);
+        cond.wait(locker, [](){return iVec.size() < MAX_BUFF_SIZE;});
+        iVec.push_back(data);
+        cout << "Produced Value : " << data<< endl;
+        data--;
+        locker.unlock();
+        cond.notify_all();
+    }
+}
+void consumer()
+{
+    while(true)
+    {
+        std::unique_lock<mutex> locker(mu);
+        cond.wait(locker, [](){return iVec.size() > 0;});
+        int data = iVec.back();
+        iVec.pop_back();
+        cout<< "Consumed data : " << data << endl;
+        locker.unlock();
+        cond.notify_all();
+    }
+}
+int main()
+{
+    std::thread t1(producer, 5);
+    std::thread t2(producer, 5);
+    std::thread t3(consumer);
+    std::thread t4(consumer);
+    
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+return 0;
+}
+
+2. print the number in sequence using two threads
+#include <pthread.h>
+// print the number in sequence using two threads
+pthread_mutex_t mt;
+int data = 0;
+void* printNum(void *p)
+{
+    while(data <= 20){
+        pthread_mutex_lock(&mt);
+        printf("%d ", data++);
+        pthread_mutex_unlock(&mt);
+    }
+    return NULL;
+}
+int main()
+{
+    pthread_t tid1, tid2;
+    
+    pthread_create(&tid1, NULL, printNum, NULL);
+    pthread_create(&tid2, NULL, printNum, NULL);
+    
+    pthread_join(tid1, NULL);
+    pthread_join(tid2, NULL);
+}
+
+3. Print even and odd numbers using two threads in c
+void* printEven(void *p1)
+{
+    while(data < 40)
+    {
+        pthread_mutex_lock(&mt1);
+        while (data%2 != 0)
+        {
+            pthread_cond_wait(&cv, &mt1);
+        }
+        printf("%d ", data++);
+        pthread_cond_signal(&cv);
+        pthread_mutex_unlock(&mt1);
+        
+    }
+    pthread_exit(0);
+}
+void* printOdd(void *p2)
+{
+    while(data < 40)
+    {
+        pthread_mutex_lock(&mt1);
+        while (data % 2 != 1)
+        {
+            pthread_cond_wait(&cv, &mt1);
+        }
+        printf("%d ", data++);
+        pthread_cond_signal(&cv);
+        pthread_mutex_unlock(&mt1);
+    }
+    pthread_exit(0);
+}
+int main()
+{
+    // threading
+    pthread_t id1, id2;
+    
+    pthread_create(&id1, NULL, &printEven, NULL);
+    pthread_create(&id2, NULL, &printOdd, NULL);
+    //sleep(3);
+    
+    pthread_join(id1, NULL);
+    pthread_join(id2, NULL);
+pthread_mutex_destroy(&mt1);
+    pthread_cond_destroy(&cv);
+
+4. Thread safe Singleton
+#include <iostream>
+#include <mutex>
+using namespace std;
+// thread safe singleton
+class singleton
+{
+private :
+    static singleton *st_ptr;
+    singleton()
+    {
+        cout << "singleton constructor " << endl;
+    }
+    singleton(const singleton& obj) = delete;
+    singleton& operator=(const singleton& obj) = delete;
+public:
+    static singleton& getInstance()
+    {
+        if (!st_ptr)
+        {
+            mutex _mutex;
+            lock_guard<mutex> lock(_mutex);
+            if (!st_ptr)
+            {   
+                st_ptr = new singleton();
+            }
+        }
+        return *st_ptr;
+    }
+};
+singleton* singleton::st_ptr = nullptr;
+int main()
+{
+    cout<<"Hello World";
+    
+    return 0;
+}
+
+Factory design pattern 
+Abstract design pattern
+Observer design pattern
+5. Architecture of LPE
+6. Windows API
+	a. Thread
+		a. CreateThread()
+		b. CloseHandle();
+	b. Mutex
+		i. CreateMutex()
+		ii. WaitForSingleObject()
+		iii. ReleaseMutex();
+	c. Semaphore
+		i. CreateSemaphore()
+			1) Need to give initial count and MAX_COUNT of semaphore
+		ii. WaitForSingleObject()
+			1) Count is decreased by one when a wait function release a thread that was waiting for the semaphore. 
+		iii. ReleaseSemaphore()
+			1) Count is increased by a specified amount by calling this function.
+			2) In this function we should specify the count to be increased, normally it will be 1, so that sem count will be increased by one only. 
+	d. Critical section
+		i. CRITICAL_SECTION CriticalSection;
+		ii. InitializeCriticalSection()
+		iii. EnterCiticalSection()
+		iv. LeaveCriticalSection()
+		v. DeleteCriticalSection(&m_Cs);
+		
+	e. Condition variable
+		i. CONDITION_VARIABLE BufferNotEmpty;
+		ii. InitializeConditionVariable()
+		iii. SleepConditionVariableCS()
+		iv. WakeConditionVariable()
+7. Linux API
+	a. Thread
+		i. Pthread_create()
+		ii. Pthread_join()
+		iii. Pthread_exit()
+	b. Mutex
+		i. Pthread_mutex_t
+	c. Semaphore
+	d. Critical section
+	e. Condition variable
+	
+8. C++ specific
+	a. Thread
+		i. Std::thread t1(thread_fun);
+	b. Mutex
+		i. Std::mutex mt;
+		ii. Std::unique_lock<std::mutex> lock(mt);
+	c. Semaphore
+	d. Critical Section
+	e. Condition variable
+		i. Std::condition_variable cv;
+		ii. Cv.wait(lock, []{ condition on which wait condition comes out })
+		iii. Cv.notify_one();
+		iv. Cv.notify_all();
+	
+Multi threading in project
+
+==================================================================================================
+==================================================================================================
+OS
+==================================================================================================
+Operating System
+	1. How filesystem works, what is fd how it works with system programming.
+	2. In Linux, command to know the cpu memory utilization
+	3. In Linux, command to know the process related information?
+	4. Fork
+	5. Library calls vs system calls?
+	6. WAP to find the size of the stack in linux. 
+	7. Hard links vs soft links
+	8. Interrupt handling
+	9. Process states
+		a. New or Ready process state, a brand new process gets created and becomes ready to run.
+	10. What are the system calls used for process management in Linux?
+System calls used for process management in Linux are fork(), exit(), wait(), exec(), nice(), getpid(), getppid().
+	11. What are Inode and Process Id?
+The inode or index node is the unique name given to each file. Process Id is the unique name given to each of the processes.
+	12. How to get the stack trace of a process on Linux
+Run pstack or run gdb and attach to process and use backtrace(bt) command
+	13. How many Linux file ownerships are there?
+There are three types of Linux file ownerships such as User, Group, and Other.
+
+
+
+==================================================================================================
+==================================================================================================
+Coding interview qustion
+==================================================================================================
+
+
+
+==================================================================================================
+==================================================================================================
+Coding interview qustion
+==================================================================================================
+
+
+
+==================================================================================================
+==================================================================================================
+Coding interview qustion
+==================================================================================================
+
+
+
+==================================================================================================
+==================================================================================================
+Coding interview qustion
+==================================================================================================
+
+		
